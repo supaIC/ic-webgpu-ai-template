@@ -95,21 +95,13 @@ router.post("/search", async (req, res) => {
 
     log(`Performing search for query: "${query}"`);
 
-    // Ensure the query is a string before passing it to the tokenizer
-    const searchQuery = query.toString();
-
-    log("Generating embeddings for search query...");
-    const embeddings = await db.embedding(searchQuery);
-    log(`Query embedding generated: ${JSON.stringify(embeddings)}`);
-
-    log("Searching vector database...");
-    const results = await db.search(searchQuery, 3, 0.5); // Search with a threshold and limit of 3 results
+    const results = await db.search(query, 10, 0.9);
 
     log("Search completed. Returning results to client.");
     res.status(200).send({ results });
   } catch (error) {
     log(`Error during search: ${error.message}`);
-    console.error(error.stack); // Log the stack trace for debugging
+    console.error(error.stack);
     res.status(500).send({ message: "Search failed." });
   }
 });
